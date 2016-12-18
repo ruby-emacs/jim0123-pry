@@ -1,3 +1,4 @@
+# coding: utf-8
 require 'open3'
 require 'drb'
 require './IOUnDumpedProxy1'
@@ -7,7 +8,7 @@ puts -> {
     status = nil
     Open3.popen3 cmd do |stdin, stdout, stderr, wait_thr|
       stdin.close # Send EOF to the process
-
+      
       until stdout.eof? and stderr.eof?
         if res = IO.select([stdout, stderr])
           res[0].each do |io|
@@ -26,6 +27,8 @@ puts -> {
   end
   client = DRbObject.new(nil, "druby://127.0.0.1:58565")
   output = IOUndumpedProxy.new(client)
-  System.call(output, "/bin/ls") #=> undefined method `write' for nil:NilClass (NoMethodError)
-  
+  #System.call(output, "/bin/ls") #=> undefined method `write' for nil:NilClass (NoMethodError)
+  System.call($stdout,"/bin/ls",3) # 打印当前目录的文件
+
+  nil
 }[]
